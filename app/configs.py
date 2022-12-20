@@ -1,6 +1,6 @@
 import enum
 
-from base import Player, ActivePlayer
+from app.core.base import Player, ActivePlayer
 
 SIMULATION_SPACE_ROWS = 10
 SIMULATION_SPACE_COLUMNS = 10

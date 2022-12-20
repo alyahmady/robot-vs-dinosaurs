@@ -1,6 +1,6 @@
-from base import ActivePlayer
-from configs import Direction
-from dinosaur import Dinosaur
+from app.core.base import ActivePlayer
+from app.configs import Direction
+from app.core.dinosaur import Dinosaur
 from space import Space
 
 

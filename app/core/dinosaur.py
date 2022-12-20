@@ -1,4 +1,4 @@
-from base import Player
+from app.core.base import Player
 from space import Space
 
 

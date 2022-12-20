@@ -1,7 +1,7 @@
 from typing import List, Type, Optional
 
-from configs import SIMULATION_SPACE_ROWS, SIMULATION_SPACE_COLUMNS, VALID_PLAYER_TYPES
-from errors import OccupiedSlot, WrongSlot, BadPlayerObject, EmptySlot
+from app.configs import SIMULATION_SPACE_ROWS, SIMULATION_SPACE_COLUMNS, VALID_PLAYER_TYPES
+from app.errors import OccupiedSlot, WrongSlot, BadPlayerObject, EmptySlot
 
 
 class Space:
