@@ -56,39 +56,39 @@ class Space:
 
         return target_x, target_y
 
-        self.simulation_space[new_y][new_x] = self.simulation_space[current_y][current_x]
-        self.simulation_space[current_y][current_x] = None
-
-    def remove_slot(
+    def _remove_slot(
             self,
             x: int,
             y: int,
+            only_static: bool = False,
             raise_on_empty: bool = True,
             raise_on_bad_index: bool = True,
-            player_type: Optional[Type[VALID_PLAYER_TYPES]] = None
+            raise_on_bad_player_type: bool = True
     ):
         """
         Remove a player object from a slot of simulation space
 
         :param x: Coordination of slot on X-axis (column number, 0-based)
         :param y: Coordination of slot on Y-axis (row number, 0-based)
+        :param only_static: If True, then slot will be removed, only if it was occupied by a static player type
         :param raise_on_empty: If True, it will raise an error, if the specified slot is empty
         :param raise_on_bad_index: If True, it will raise an error, if the specified slot coordination is out of range
-        :param player_type: If not None, then slot will be removed, only if it was occupied by the specified player type
         :return: None
         """
 
         if raise_on_bad_index:
-            if x not in range(SIMULATION_SPACE_COLUMNS) or y not in range(SIMULATION_SPACE_ROWS):
+            if x not in range(self.columns_count) or y not in range(self.rows_count):
                 raise WrongSlot
 
-        player_object = self.simulation_space[y][x]
+        player = self.simulation_space[y][x]
 
-        if raise_on_empty and player_object is None:
+        if raise_on_empty and player is None:
             raise EmptySlot
 
-        if player_type:
-            if player_object and not isinstance(player_object, player_type):
-                raise BadPlayerObject(f"{type(player_object).__name__} object cannot be removed from simulation space")
+        if only_static:
+            if player and not PlayerEnum.is_static(player):
+                if not raise_on_bad_player_type:
+                    return
+                raise BadPlayerObject(f"{player} object cannot be removed from simulation space")
 
         self.simulation_space[y][x] = None
