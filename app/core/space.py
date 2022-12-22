@@ -5,10 +5,18 @@ from app.errors import OccupiedSlot, WrongSlot, BadPlayerObject, EmptySlot
 
 
 class Space:
-    def __init__(self):
-        self.simulation_space: List[List] = [
-            [None for _ in range(SIMULATION_SPACE_COLUMNS)] for _ in range(SIMULATION_SPACE_ROWS)
-        ]
+    def __init__(self, existing_space: List[List] | None = None):
+        if existing_space:
+            self.__validate_existing_space(existing_space)
+            self.rows_count: int = len(existing_space)
+            self.columns_count: int = len(existing_space[0])
+            self.simulation_space: List[List] = existing_space
+        else:
+            self.rows_count: int = SIMULATION_SPACE_ROWS
+            self.columns_count: int = SIMULATION_SPACE_COLUMNS
+            self.simulation_space: List[List] = [
+                [None for _ in range(self.columns_count)] for _ in range(self.rows_count)
+            ]
 
     def fill_slot(self, player_object: VALID_PLAYER_TYPES, x: int, y: int):
         if x not in range(SIMULATION_SPACE_COLUMNS) or y not in range(SIMULATION_SPACE_ROWS):
