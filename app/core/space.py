@@ -18,22 +18,25 @@ class Space:
                 [None for _ in range(self.columns_count)] for _ in range(self.rows_count)
             ]
 
-    def fill_slot(self, player_object: VALID_PLAYER_TYPES, x: int, y: int):
-        if x not in range(SIMULATION_SPACE_COLUMNS) or y not in range(SIMULATION_SPACE_ROWS):
-            raise WrongSlot
+    def __validate_existing_space(self, space: List[List] | None = None):
+        if not isinstance(space, list):
+            raise BadSpaceGrid
 
-        if self.simulation_space[y][x] is not None:
-            raise OccupiedSlot
+        if len(space) < 2:
+            raise BadSpaceGrid("Simulation space grid must have more than 4 cells to work")
 
-        if not isinstance(player_object, VALID_PLAYER_TYPES):
-            raise BadPlayerObject
+        for row in space:
+            if not isinstance(row, list):
+                raise BadSpaceGrid
 
-        self.simulation_space[y][x] = player_object
+            if not len(row) == len(space):
+                raise BadSpaceGrid(
+                    "Simulation space type is not valid. "
+                    "It must be a square shaped grid with same count of rows and columns"
+                )
 
-    def change_spot(self, current_x: int, current_y: int, new_x: int, new_y: int):
-        for idx in (current_x, new_x):
-            if idx not in range(SIMULATION_SPACE_COLUMNS):
-                raise WrongSlot
+            if not all(item is None or PlayerEnum.has_value(item) for item in row):
+                raise BadPlayerObject("Player items in space grid rows are invalid")
 
         for idx in (current_y, new_y):
             if idx not in range(SIMULATION_SPACE_ROWS):
