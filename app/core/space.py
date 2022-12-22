@@ -1,7 +1,7 @@
-from typing import List, Type, Optional
+from typing import List, Tuple
 
-from app.configs import SIMULATION_SPACE_ROWS, SIMULATION_SPACE_COLUMNS, VALID_PLAYER_TYPES
-from app.errors import OccupiedSlot, WrongSlot, BadPlayerObject, EmptySlot
+from app.configs import SIMULATION_SPACE_ROWS, SIMULATION_SPACE_COLUMNS, DirectionEnum, PlayerEnum
+from app.errors import BadSpaceGrid, BadPlayerObject, BadDirection, WrongSlot, EmptySlot, OccupiedSlot
 
 
 class Space:
@@ -92,3 +92,23 @@ class Space:
                 raise BadPlayerObject(f"{player} object cannot be removed from simulation space")
 
         self.simulation_space[y][x] = None
+
+    def create_player(self, player: PlayerEnum | str, x: int, y: int):
+        if not player:
+            raise BadPlayerObject
+
+        if isinstance(player, str) and PlayerEnum.has_value(player):
+            raise BadPlayerObject
+
+        if isinstance(player, PlayerEnum):
+            player = player.value
+            if not PlayerEnum.has_value(player):
+                raise BadPlayerObject
+
+        if x not in range(self.columns_count) or y not in range(self.rows_count):
+            raise WrongSlot
+
+        if self.simulation_space[y][x] is not None:
+            raise OccupiedSlot
+
+        self.simulation_space[y][x] = player
