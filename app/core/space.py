@@ -38,15 +38,23 @@ class Space:
             if not all(item is None or PlayerEnum.has_value(item) for item in row):
                 raise BadPlayerObject("Player items in space grid rows are invalid")
 
-        for idx in (current_y, new_y):
-            if idx not in range(SIMULATION_SPACE_ROWS):
-                raise WrongSlot
+    def _direction_coordination(self, x, y, direction: DirectionEnum) -> Tuple[int, int]:
+        target_x: int = x
+        target_y: int = y
 
-        if self.simulation_space[current_y][current_x] is None:
-            raise EmptySlot("No player is in the source slot")
+        match direction:
+            case DirectionEnum.UP:
+                target_y -= 1
+            case DirectionEnum.DOWN:
+                target_y += 1
+            case DirectionEnum.LEFT:
+                target_x -= 1
+            case DirectionEnum.RIGHT:
+                target_x += 1
+            case _:
+                raise BadDirection()
 
-        if self.simulation_space[new_y][new_x] is not None:
-            raise OccupiedSlot("Target slot is already occupied")
+        return target_x, target_y
 
         self.simulation_space[new_y][new_x] = self.simulation_space[current_y][current_x]
         self.simulation_space[current_y][current_x] = None
