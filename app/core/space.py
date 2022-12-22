@@ -139,3 +139,21 @@ class Space:
         self.simulation_space[y][x] = None
 
         return target_x, target_y
+
+    def player_attack(self, x: int, y: int):
+        player = self.simulation_space[y][x]
+
+        if player is None:
+            raise EmptySlot("No player is in the source slot")
+
+        if PlayerEnum.is_static(player):
+            raise BadPlayerObject("Static players cannot attack")
+
+        for direction in DirectionEnum:
+            self._remove_slot(
+                *self._direction_coordination(x, y, direction),
+                only_static=True,
+                raise_on_empty=False,
+                raise_on_bad_index=False,
+                raise_on_bad_player_type=False,
+            )
