@@ -112,3 +112,30 @@ class Space:
             raise OccupiedSlot
 
         self.simulation_space[y][x] = player
+
+    def move_player(self, x: int, y: int, direction: DirectionEnum) -> Tuple[int, int]:
+        target_x, target_y = self._direction_coordination(x, y, direction)
+
+        for idx in (x, target_x):
+            if idx not in range(self.columns_count):
+                raise WrongSlot("Cannot move player out of the map")
+
+        for idx in (y, target_y):
+            if idx not in range(self.rows_count):
+                raise WrongSlot("Cannot move player out of the map")
+
+        player = self.simulation_space[y][x]
+
+        if player is None:
+            raise EmptySlot("No player is in the source slot")
+
+        if PlayerEnum.is_static(player):
+            raise BadPlayerObject("Static players cannot move")
+
+        if self.simulation_space[target_y][target_x] is not None:
+            raise OccupiedSlot("Target slot is already occupied")
+
+        self.simulation_space[target_y][target_x] = player
+        self.simulation_space[y][x] = None
+
+        return target_x, target_y
